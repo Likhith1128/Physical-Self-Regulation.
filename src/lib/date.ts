@@ -15,10 +15,16 @@ export const lastNDays = (n: number, from: Date = new Date()) => {
   return days;
 };
 
-export const shortLabel = (key: string) => {
+const parseKey = (key: string) => {
   const [y, m, d] = key.split('-').map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric' });
+  return new Date(y, m - 1, d);
 };
+
+export const shortLabel = (key: string) =>
+  parseKey(key).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+
+export const weekdayLabel = (key: string) =>
+  parseKey(key).toLocaleDateString(undefined, { weekday: 'narrow' });
 
 export const formatClock = (totalSeconds: number) => {
   const s = Math.max(0, Math.round(totalSeconds));

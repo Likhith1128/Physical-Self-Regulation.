@@ -3,7 +3,7 @@ import { Pressable, Share, Text, View } from 'react-native';
 
 import { Button, Card, colors, confirm, H1, H2, notify, P, Pill, Screen } from '@/components/ui';
 import { DAILY_TARGETS, EXERCISES } from '@/lib/content';
-import { lastNDays, shortLabel } from '@/lib/date';
+import { lastNDays, shortLabel, weekdayLabel } from '@/lib/date';
 import { applyReminders } from '@/lib/notifications';
 import { pct, summarize } from '@/lib/stats';
 import { AppState, DayLog, emptyDay, useStore } from '@/lib/store';
@@ -40,7 +40,7 @@ function BarChart({ keys, values, max, color, goal }: {
       <View style={{ flexDirection: 'row', gap: dense ? 2 : 6, marginTop: 4 }}>
         {keys.map((k, i) => (
           <Text key={k} style={{ flex: 1, fontSize: 10, color: colors.muted, textAlign: 'center' }} numberOfLines={1}>
-            {dense ? (i % 5 === 0 ? k.slice(8) : '') : shortLabel(k).split(' ')[0].slice(0, 2)}
+            {dense ? (i % 5 === 0 ? k.slice(8) : '') : weekdayLabel(k)}
           </Text>
         ))}
       </View>
