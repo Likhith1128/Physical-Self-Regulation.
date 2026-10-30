@@ -4,9 +4,11 @@ import { Pressable, Text, View } from 'react-native';
 
 import { Button, Card, colors, H1, H2, P, Pill, ProgressBar, Screen, Stepper } from '@/components/ui';
 import { DAILY_TARGETS, EXERCISES } from '@/lib/content';
+import { useAuth } from '@/lib/auth';
 import { useStore } from '@/lib/store';
 
 export default function TodayScreen() {
+  const { user } = useAuth();
   const { state, today, updateDay } = useStore();
   const target = DAILY_TARGETS.exercisePracticesPerDay;
   const activeExercises = EXERCISES.filter((e) => !state.discontinued[e.id]);
@@ -18,7 +20,7 @@ export default function TodayScreen() {
   return (
     <Screen>
       <View style={{ gap: 4 }}>
-        <H1>Today</H1>
+        <H1>Hi, {user?.name.split(' ')[0]}</H1>
         <P muted>{new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</P>
       </View>
 
