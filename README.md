@@ -17,10 +17,15 @@ PSR is a patient companion app for the Physical Self-Regulation (PSR) treatment 
 - Optional twice-daily breathing reminders.
 - Treatment planning: a goal checklist and session notes.
 
+**Accounts**
+- The app opens on a sign-up screen (name, email, password, confirm password) or, once an account exists on the device, a sign-in screen (email, password).
+- Sign out from the button at the top right of the Today screen.
+- Each account's PSR data is stored separately. Accounts are local to the device: passwords are salted and hashed, and nothing is sent to a server.
+
 **Daily tracking and progress**
 - Today dashboard: a clenching-episode counter, jaw check-ins, stretch and breathing progress, and a daily 0–10 pain rating.
 - Progress charts over 7, 14, or 30 days, and a shareable text report for the interventionist.
-- All data stays on the device (AsyncStorage). Nothing is sent to a server.
+- All data stays on the device (AsyncStorage).
 
 > The exercise descriptions live in `src/lib/content.ts` and can be edited to match the exact instructions given by the research team's physical therapists.
 
@@ -57,6 +62,7 @@ src/app/            Screens (Expo Router)
   exercise/[id].tsx Guided stretch
   breathing.tsx     Breathing pacer
   checkin.tsx       Jaw check-in
+  auth.tsx          Sign up / sign in
 src/components/     Shared UI
 src/lib/            Content, persisted store, reminders, stats
 ```
