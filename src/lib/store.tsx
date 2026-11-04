@@ -3,6 +3,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, 
 
 import { ExerciseId, StrategyId } from './content';
 import { dateKey } from './date';
+import { applyReminders } from './notifications';
 
 export type DayLog = {
   exercises: Record<ExerciseId, number>;
@@ -32,7 +33,8 @@ export type AppState = {
   plan: { review: string; notes: string; goals: { id: string; text: string; done: boolean }[] };
 };
 
-const STORAGE_KEY = 'psr-state-v1';
+export const LEGACY_STATE_KEY = 'psr-state-v1';
+export const stateKeyFor = (userId: string) => `${LEGACY_STATE_KEY}:${userId}`;
 
 export const emptyDay = (): DayLog => ({
   exercises: { masseter: 0, neck: 0, upperBack: 0 },
@@ -83,27 +85,34 @@ const mergeLoaded = (raw: Partial<AppState>): AppState => {
   };
 };
 
-export function StoreProvider({ children }: { children: ReactNode }) {
+const hasActiveReminders = (r: ReminderSettings) => r.clenchCheckIns || r.exerciseReminders || r.breathingReminders;
+
+/** Remount with `key={userId}` when the signed-in user changes. Without a user nothing is persisted. */
+export function StoreProvider({ userId, children }: { userId: string | null; children: ReactNode }) {
   const [state, setState] = useState<AppState>(defaultState);
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(!userId);
   const loaded = useRef(false);
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY)
+    if (!userId) return;
+    AsyncStorage.getItem(stateKeyFor(userId))
       .then((json) => {
-        if (json) setState(mergeLoaded(JSON.parse(json)));
+        if (!json) return;
+        const restored = mergeLoaded(JSON.parse(json));
+        setState(restored);
+        if (hasActiveReminders(restored.reminders)) applyReminders(restored.reminders).catch(() => {});
       })
       .catch(() => {})
       .finally(() => {
         loaded.current = true;
         setReady(true);
       });
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
-    if (!loaded.current) return;
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state)).catch(() => {});
-  }, [state]);
+    if (!userId || !loaded.current) return;
+    AsyncStorage.setItem(stateKeyFor(userId), JSON.stringify(state)).catch(() => {});
+  }, [state, userId]);
 
   const update = useCallback((fn: (s: AppState) => AppState) => setState(fn), []);
 

@@ -86,6 +86,10 @@ export function planReminders(r: ReminderSettings): Planned[] {
   return planned.slice(0, MAX_SCHEDULED);
 }
 
+export async function cancelAllReminders() {
+  if (remindersSupported) await Notifications.cancelAllScheduledNotificationsAsync();
+}
+
 export async function applyReminders(r: ReminderSettings): Promise<{ ok: boolean; count: number; message?: string }> {
   if (!remindersSupported) {
     return { ok: false, count: 0, message: 'Reminders are available in the Android and iOS apps.' };

@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ColorValue } from 'react-native';
 import { Tabs } from 'expo-router/js-tabs';
 
+import { SignOutButton } from '@/components/SignOutButton';
 import { colors, IconName } from '@/components/ui';
 
 const icon = (name: IconName) =>
@@ -19,7 +20,10 @@ export default function TabsLayout() {
         headerTitleStyle: { color: colors.text },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: 'Today', tabBarIcon: icon('today-outline') }} />
+      <Tabs.Screen
+        name="index"
+        options={{ title: 'Today', tabBarIcon: icon('today-outline'), headerRight: () => <SignOutButton /> }}
+      />
       <Tabs.Screen name="session1" options={{ title: 'Session 1', tabBarIcon: icon('body-outline') }} />
       <Tabs.Screen name="session2" options={{ title: 'Session 2', tabBarIcon: icon('leaf-outline') }} />
       <Tabs.Screen name="progress" options={{ title: 'Progress', tabBarIcon: icon('stats-chart-outline') }} />
